@@ -1,26 +1,25 @@
 #' @importFrom ggplot2 autoplot
-#' @importFrom tidyr gather
-#' @importFrom data.table rbindlist
 #' @import ggfortify
 #' @export
 ggplot2::autoplot
 
 
 
-#' Visualization of \code{clustcurv} objects with ggplot2 graphics
+#' Visualization of \code{clustcurves} objects with ggplot2 graphics
 #'
 #' @description Useful for drawing the estimated functions grouped by
 #' color and the centroids (mean curve of the curves pertaining to the
 #' same group).
 #'
-#' @param object Object of \code{clustcurv} class.
+#' @param object Object of \code{clustcurves} class.
 #' @param groups_by_colour A specification for the plotting groups by color.
 #' @param centers  Draw the centroids (mean of the curves pertaining to the
 #' same group) into the plot. By default it is \code{FALSE}.
-#' @param conf.int Only for method = "survival". Logical flag indicating whether to plot confidence intervals.
-#' @param censor Only for method = "survival". Logical flag indicating whether to plot censors.
+#' @param conf.int Only for survival curves. Logical flag indicating whether to plot confidence intervals.
+#' @param censor Only for survival curves. Logical flag indicating whether to plot censors.
 #' @param xlab A title for the \code{x} axis.
 #' @param ylab A title for the \code{y} axis.
+#' @param interactive Logical flag indicating if an interactive plot with plotly is produced.
 #' @param \ldots Other options.
 #'
 #' @details See help page of the function \code{\link{autoplot.survfit}}.
@@ -42,8 +41,8 @@ ggplot2::autoplot
 #' data(veteran)
 #' data(colonCS)
 #'
-#' cl2 <- kclustcurv(y = veteran$time, weights = veteran$status,
-#' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
+#' cl2 <- ksurvcurves(time = veteran$time, status = veteran$status,
+#' x = veteran$celltype, k = 2, algorithm = "kmeans")
 #'
 #' autoplot(cl2)
 #' autoplot(cl2, groups_by_colour = FALSE)
@@ -53,11 +52,12 @@ ggplot2::autoplot
 #'\donttest{
 #' # Regression
 #'
-#' r2 <- kclustcurv(y = barnacle5$DW, x = barnacle5$RC,
-#' z = barnacle5$F, k = 2, method = "regression", algorithm = "kmeans")
+#' r2 <- kregcurves(y = barnacle5$DW, x = barnacle5$RC,
+#' z = barnacle5$F, k = 2, algorithm = "kmeans")
 #'
 #' autoplot(r2)
 #' autoplot(r2, groups_by_colour = FALSE)
+#' autoplot(r2, groups_by_colour = FALSE, interactive = TRUE)
 #' autoplot(r2, centers = TRUE)
 #'
 #'
@@ -70,32 +70,34 @@ ggplot2::autoplot
 #' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
 #' table(colonCSm$nodes) # ten levels
 #'
-#' res <- autoclustcurv(y = colonCSm$time, weights = colonCSm$status,
-#'        z = colonCSm$nodes, method = "survival", algorithm = "kmeans",
-#'        nboot = 20)
+#' res <- survclustcurves(time = colonCSm$time, status = colonCSm$status,
+#'        x = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
 #'
 #' autoplot(res)
 #' autoplot(res, groups_by_colour = FALSE)
 #' autoplot(res, centers = TRUE)
 #' }
-#' @importFrom wesanderson wes_palette
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom grDevices colorRampPalette
 #' @export
 
-autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
+autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
           centers = FALSE, conf.int = FALSE, censor = FALSE,
-          xlab = "Time", ylab = "Survival", ...){
+          xlab = "Time", ylab = "Survival", interactive = FALSE, ...){
+
+
 
   x <- object
   y <- c()
   k <- length(unique(x$cluster))
 
-  if(k < 3){
-    colgr <- brewer.pal(n = 3, name = "Dark2")
-  }else{
-    colgr <- brewer.pal(n = k, name = "Dark2")
-    }
-
+   if(k < 3){
+     colgr <- brewer.pal(n = 3, name = "Dark2")
+   }else if(k<9){
+     colgr <- brewer.pal(n = k, name = "Dark2")
+     }else{
+  colgr <- colorRampPalette(brewer.pal(n = 8, name = "Dark2"))(k)
+     }
 
   if(x$method == "survival"){
 
@@ -107,9 +109,17 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
 
   if (isTRUE(groups_by_colour)){
     plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster])
-    plot2
+    if(isTRUE(interactive)){
+      if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+    }else{
+        plot2
+      }
   }else{
-    plot1
+    if(isTRUE(interactive)){
+      if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot1)}
+    }else{
+      plot1
+    }
   }
 
   }else{
@@ -126,7 +136,12 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
 
       plot2 <- plot1 + ggplot2::geom_step(data = data,
                         ggplot2::aes_string(x = "t", y = "surv", group = "cen"), size = 1)
-      plot2
+
+      if(isTRUE(interactive)){
+        if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+      }else{
+        plot2
+      }
 
   }
 
@@ -144,9 +159,17 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
         if (isTRUE(groups_by_colour)){
           plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster])
-          plot2
+          if(isTRUE(interactive)){
+            if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+          }else{
+            plot2
+          }
         }else{
-          plot1
+          if(isTRUE(interactive)){
+            if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot1)}
+          }else{
+            plot1
+          }
         }
       }else{
 
@@ -170,7 +193,11 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
         plot1 <- ggplot2::qplot(x, y, data = dat, colour = levels, geom = "line")
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
         plot2 <- plot1 + ggplot2::scale_color_manual(values = c(colgr[x$cluster], rep(1,k)))
-        plot2
+        if(isTRUE(interactive)){
+          if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+        }else{
+          plot2
+        }
 
     }
 
