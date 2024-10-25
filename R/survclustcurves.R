@@ -57,9 +57,7 @@
 #'@examples
 #' library(clustcurv)
 #' library(survival)
-#' library(condSURV)
 #' data(veteran)
-#' data(colonCS)
 #'
 #'# Survival framework
 #' res <- survclustcurves(time = veteran$time, status = veteran$status,
@@ -218,21 +216,7 @@ survclustcurves <- function(time, status = NULL, x,
 
     }
 
-    #   if(method == 'regression'){
-    #
-    #   # if(missing(x)) {
-    #   #   stop(error.code.9)
-    #   # }
-    #   # if(missing(y)) {
-    #   #   stop(error.code.11)
-    #   # }
-    #
-    #
-    # aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
-    #                  h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
-    #                  cluster = cluster)
-    #
-    # }
+
 
 
     pval[ii] <- aux[[ii]]$pvalue

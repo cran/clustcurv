@@ -47,7 +47,7 @@ summary.kcurves <- function(object, ...){
   cat("\nClustering curves in ", length(unique(object$cluster)),
       " groups", "\n", sep = "")
   if(object$method == "survival"){
-    cat("\nNumber of observations: ",length(object$centers$time))
+    cat("\nNumber of observations: ",length(object$centers$time)) #cambiar a lenght(object$curves$time)
   }else{
     cat("\nNumber of observations: ",dim(object$data)[1])
   }

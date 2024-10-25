@@ -2,9 +2,6 @@
 #' @import ggfortify
 #' @export
 ggplot2::autoplot
-
-
-
 #' Visualization of \code{clustcurves} objects with ggplot2 graphics
 #'
 #' @description Useful for drawing the estimated functions grouped by
@@ -22,7 +19,8 @@ ggplot2::autoplot
 #' @param interactive Logical flag indicating if an interactive plot with plotly is produced.
 #' @param \ldots Other options.
 #'
-#' @details See help page of the function \code{\link{autoplot.survfit}}.
+#'
+#' @details See help page of the function \code{\link[ggfortify:autoplot.survfit]{ggfortify::autoplot.survfit()}}.
 #'
 #' @return A ggplot object, so you can use common features from
 #' ggplot2 package to manipulate the plot.
@@ -32,14 +30,11 @@ ggplot2::autoplot
 #'
 #' library(survival)
 #' library(clustcurv)
-#' library(condSURV)
 #' library(ggplot2)
 #' library(ggfortify)
 #'
 #' # Survival
 #'
-#' data(veteran)
-#' data(colonCS)
 #'
 #' cl2 <- ksurvcurves(time = veteran$time, status = veteran$status,
 #' x = veteran$celltype, k = 2, algorithm = "kmeans")
@@ -60,22 +55,6 @@ ggplot2::autoplot
 #' autoplot(r2, groups_by_colour = FALSE, interactive = TRUE)
 #' autoplot(r2, centers = TRUE)
 #'
-#'
-#' colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
-#'                       nodes = colonCS$nodes)
-#'
-#' table(colonCSm$nodes)
-#' colonCSm$nodes[colonCSm$nodes == 0] <- NA
-#' colonCSm <- na.omit(colonCSm)
-#' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
-#' table(colonCSm$nodes) # ten levels
-#'
-#' res <- survclustcurves(time = colonCSm$time, status = colonCSm$status,
-#'        x = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
-#'
-#' autoplot(res)
-#' autoplot(res, groups_by_colour = FALSE)
-#' autoplot(res, centers = TRUE)
 #' }
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
@@ -145,7 +124,7 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
 
   }
 
-  }else{ #method regression
+  }else if(x$method == "regression"){ #method regression
 
       if(isFALSE(centers)){
 
@@ -198,6 +177,61 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
         }else{
           plot2
         }
+
+    }
+
+  }else{ #method cif
+
+
+    if(isFALSE(centers)){
+
+      #CORREGIR legend
+      if(conf.int == FALSE){
+         conf.type = "none"
+        }else{
+         conf.type = "log"
+        }
+      plot1 <- plot(x$curves, use.ggplot = TRUE, legend = x$levels[-1],
+                    ylim =c(0, max(x$curves[,-c(1:2)])), conf.type = conf.type)
+
+
+      if (isTRUE(groups_by_colour)){
+        plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster[-1]])
+        if(isTRUE(interactive)){
+          if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+        }else{
+          plot2
+        }
+      }else{
+        if(isTRUE(interactive)){
+          if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot1)}
+        }else{
+          plot1
+        }
+      }
+
+
+
+    }else{
+
+     # FALTA
+      # data <- data.frame(t = x$centers$time,
+      #                    surv = x$centers$surv,
+      #                    cen = factor(unlist(sapply(1:k, function(x, y){rep(x, y[x])},
+      #                                               y = x$centers$strata))))
+      #
+      # plot1 <- autoplot(x$curves, conf.int = conf.int, censor = censor, xlab = xlab,
+      #                   ylab = ylab, ...) + ggplot2::scale_color_manual(values = colgr[x$cluster])
+      #
+      #
+      # plot2 <- plot1 + ggplot2::geom_step(data = data,
+      #                                     ggplot2::aes_string(x = "t", y = "surv", group = "cen"), size = 1)
+      #
+      # if(isTRUE(interactive)){
+      #   if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+      # }else{
+      #   plot2
+      # }
 
     }
 
