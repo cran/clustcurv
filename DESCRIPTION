@@ -3,8 +3,8 @@ Type: Package
 Title: Determining Groups in Multiples Curves
 URL: https://github.com/noramvillanueva/clustcurv
 BugReports: https://github.com/noramvillanueva/clustcurv/issues
-Version: 3.0.0
-Date: 2025-11-14
+Version: 3.0.1
+Date: 2025-12-05
 Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
 Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role = c("aut", "cre"),
   comment = c(ORCID = "0000-0001-8085-2745")),
@@ -26,9 +26,9 @@ Config/testthat/edition: 3
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2025-11-14 17:14:10 UTC; sestelo
+Packaged: 2025-12-05 10:03:37 UTC; sestelo
 Author: Nora M. Villanueva [aut, cre] (ORCID:
     <https://orcid.org/0000-0001-8085-2745>),
   Marta Sestelo [aut] (ORCID: <https://orcid.org/0000-0003-4284-6509>)
 Repository: CRAN
-Date/Publication: 2025-11-14 20:40:02 UTC
+Date/Publication: 2025-12-06 11:30:07 UTC

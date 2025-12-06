@@ -1,10 +1,10 @@
-1d6bd7b791fffef69676ed4930a7cf51 *DESCRIPTION
+3e739f4ef89f55b40df0b63dd9c9588d *DESCRIPTION
 fcf95844112d6381d6f44b416fe31dd1 *LICENSE
 6b33429cb6598f1c90a0b7774c41e0c7 *NAMESPACE
-8f3f52ca1e5f531d2c0d1d59efd78f87 *NEWS
+cdeda20a23fff430a835ef08860a30b2 *NEWS
 a6ac91bc2d28cc862e2039e64395fa06 *R/autoplot.clustcurves.R
 6acdc5305af5be851e614e6cdab20fc3 *R/auxfun_reg.R
-859187efd67bcfeb414c979ce8e802e3 *R/auxfun_surv.R
+c0e2799628518d3d337f04fb1739a270 *R/auxfun_surv.R
 e9c2f3e7fe79c353fd686c15fc3a0952 *R/barnacle5.R
 471819536b1c305a3eea0d44f97302f9 *R/clustcurv-package.R
 8e0347a2badf44b9a68c1ff8d03a96b6 *R/kregcurves.R
@@ -20,7 +20,7 @@ d9f94f25067c2dd9f116b57ad9f34898 *R/summary.kcurves.R
 c393bef0977f252e7b9b518fb50ce8ee *inst/CITATION
 c8653e4bdf08146b1d04c24069c6a9e7 *inst/doc/clustcurv.R
 2370056ede50ebfc2bc915c9d0a69a41 *inst/doc/clustcurv.Rmd
-c719b4d49bb8aeca37af9f952ea500b5 *inst/doc/clustcurv.html
+b4509777cf9e0bfa7ecd14d847c4860e *inst/doc/clustcurv.html
 690e19e1cebcd01a9ea1e902d913e156 *man/autoplot.clustcurves.Rd
 84ed13ac9d8d273231f7262adfd811d4 *man/barnacle5.Rd
 bb6be636d2a7ee1f28bdf5417a5fc2fb *man/clustcurv.Rd
